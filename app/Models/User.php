@@ -41,4 +41,9 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     {
         return [];
     }
+
+    public static function findByEmail($email)
+    {
+        return self::where('email',$email)->first()->role_id;
+    }
 }

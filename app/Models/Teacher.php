@@ -10,4 +10,14 @@ class Teacher extends Model
     protected $fillable=[
         'last_name','first_name'
     ];
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class,'teachers_students','teacher_id','student_id');
+    }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
 }

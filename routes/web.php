@@ -30,11 +30,45 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/checkAuth', function () {
         return "Auth Checked";
     });
-    $router->group(['middleware' => 'teacher'], function () use ($router) {
-        //TEACHER AUTHENTICATED ROUTES HERE...
+
+
+
+
+
+
+
+    //TEACHER AUTHENTICATED ROUTES HERE...
+    $router->group(['middleware' => 'teacher','prefix'=>'teacher'], function () use ($router) {
+        $router->group(['prefix'=>'course'], function() use ($router){
+            $router->get('/','CoursesController@getAll');
+            $router->post('/add','CoursesController@add');
+            $router->put('/update','CoursesController@update');
+            $router->delete('/delete','CoursesController@delete');
+
+            $router->post('/enrol','CoursesController@enrol');
+        });
     });
 
-    $router->group(['middleware' => 'student'], function () use ($router) {
-        //STUDENT AUTHENTICATED ROUTES HERE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //STUDENT AUTHENTICATED ROUTES HERE...
+    $router->group(['middleware' => 'student','prefix'=>'student'], function () use ($router) {
+        $router->Get('/checkStudent', function () {
+            return "Student Checked";
+        });
     });
 });
