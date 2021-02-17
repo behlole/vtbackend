@@ -32,15 +32,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     });
     $router->group(['middleware' => 'teacher'], function () use ($router) {
         //TEACHER AUTHENTICATED ROUTES HERE...
-        $router->Get('/checkTeacher', function () {
-            return "Teacher Checked";
-        });
     });
 
     $router->group(['middleware' => 'student'], function () use ($router) {
         //STUDENT AUTHENTICATED ROUTES HERE...
-        $router->Get('/checkStudent', function () {
-            return "Student Checked";
-        });
     });
 });
