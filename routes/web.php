@@ -47,6 +47,13 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
             $router->post('/enrol','CoursesController@enrol');
         });
+
+        $router->group(['prefix'=>'students'],function () use ($router)
+        {
+            $router->post('/add','Teacher\StudentController@add');
+            $router->get('/','Teacher\StudentController@index');
+        });
+
     });
 
 
