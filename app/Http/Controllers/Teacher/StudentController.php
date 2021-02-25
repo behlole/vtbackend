@@ -25,34 +25,40 @@ class StudentController extends Controller
         $this->validate($request,[
             'first_name'=>'required',
             'last_name'=>'required',
-            'email'=>'required|email|unique:users,email'
+            'email'=>'required|email|unique:users,email',
+            'gender'=>'required',
         ]);
-//        try {
+        try {
             $student=new Student();
-        $student->first_name=$request->input('first_name');
-        $student->last_name=$request->input('last_name');
-            $student->save();
-
-            $role_id = Student::latest('id')->first();
-
+            $student->fill($request->all())->save();
+            $role_id = Student::latest('id')->first()->id;
             Teacher::find(auth()->user()->id)->students()->attach($role_id);
             $user=new User();
             $user->first_name=$request->input('first_name');
             $user->last_name=$request->input('last_name');
             $user->password=Hash::make('defaultpass');
             $user->email=$request->input('email');
+
             $user->role_type=2;
             $user->role_id=$role_id;
             $user->save();
             return response([
                 'message'=>'Student saved successfully',
-                'student'=>$user
+                'student'=>$student
             ]);
-//        }
-//        catch (\Exception $e)
-//        {
-//            return Helper::errorResponse('Something bad happened');
-//        }
-
+        }
+        catch (\Exception $e)
+        {
+            return Helper::errorResponse('Something bad happened');
+        }
+    }
+    public function update(Request $request)
+    {
+        $student=Student::where($request->input('id'));
+        $student->update($request->all());
+        return "hello";
+        $user=User::where('role_type','=',2)->where('id','2');
+        $user->update($request->all());
+        return Helper::successResponse("Student Updated Successfully");
     }
 }

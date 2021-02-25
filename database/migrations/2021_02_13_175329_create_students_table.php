@@ -17,7 +17,14 @@ class CreateStudentsTable extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('email')->unique();
             $table->string('profile_pic')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->unsignedBigInteger('phone_number')->nullable();
+            $table->string('gender');
+            $table->string('department')->nullable();
+            $table->boolean('is_enrolled')->nullable();
+            $table->string('city');
             $table->timestamps();
         });
     }

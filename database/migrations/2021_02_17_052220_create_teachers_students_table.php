@@ -17,8 +17,8 @@ class CreateTeachersStudentsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('teacher_id');
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('teacher_id')->references('id')->on('teachers');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
             $table->timestamps();
         });
     }

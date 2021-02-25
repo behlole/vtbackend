@@ -28,7 +28,7 @@ class AuthController extends Controller
             'password' => 'required | confirmed',
             'role_type' => 'required | integer',
         ]);
-        try {
+//        try {
             //role 1 for teacher
             //role 2 for student
             //role 3 for superadmin
@@ -43,9 +43,7 @@ class AuthController extends Controller
 
             } elseif ($request->input('role_type') == 2) {
                 $student = new Student();
-                $student->first_name=$request->input('first_name');
-                $student->last_name=$request->input('last_name');
-                $student->save();
+                $student->fill($request->all())->save();
                 $role_id = Student::latest('id')->first();
                 $role_id = $role_id->id;
 
@@ -59,13 +57,14 @@ class AuthController extends Controller
             $user->password = app('hash')->make($request->input('password'));
             $user->role_type = $request->input('role_type');
             $user->role_id = $role_id;
+
             $user->save();
             $credentials['email'] = $user->email;
             $credentials['password'] = $request->input('password');
             return $this->authenticate($credentials);
-        } catch (\Exception $e) {
-            return Helper::errorResponse("User Registration failed");
-        }
+//        } catch (\Exception $e) {
+//            return Helper::errorResponse("User Registration failed");
+//        }
     }
 
     public function login(Request $request)
