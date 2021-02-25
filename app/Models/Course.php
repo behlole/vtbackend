@@ -10,9 +10,7 @@ class Course extends Model
 {
     protected $table='courses';
     protected $guarded=[];
-    /**
-     * @var mixed
-     */
+
 
     public static function deleteCourse($id)
     {

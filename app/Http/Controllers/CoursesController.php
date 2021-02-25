@@ -23,22 +23,12 @@ class CoursesController extends Controller
 
             $this->validate($request, [
                 'course_name' => 'required',
-                'course_id' => 'required',
+                'id' => 'required',
             ]);
-            $course = Course::find($request->input('course_id'));
-            if ($request->hasFile('thumbnail')) {
-
-                if (Storage::disk('local')->exists('courses/' . $course->thumbnail)) {
-                    unlink(app()->basePath('storage/app/courses/' . $course->thumbnail));
-                }
-                $file = $request->file('thumbnail');
-                $file_name = Carbon::now()->timestamp . "-" . $file->getClientOriginalName();
-                $course->thumbnail = $file_name;
-                Storage::putFileAs("courses", $file, $file_name);
-
-            }
-            $course->course_name = $request->input('course_name');
-            $course->save();
+            $course = Course::find($request->input('id'));
+            $course->update([
+                'course_name'=>$request->input('course_name')
+                ]);
             return Helper::successResponse("Course updated successfully");
         } catch (\Exception $e) {
             return Helper::errorResponse($e->getMessage());
@@ -71,13 +61,10 @@ class CoursesController extends Controller
         }
     }
 
-    public function delete(Request $request)
+    public function delete($id)
     {
-        $data = Course::deleteCourse($request->input('course_id'));
+        $data = Course::deleteCourse($id);
         if ($data) {
-            if (Storage::disk('local')->exists('courses/' . $data->thumbnail)) {
-                unlink(app()->basePath('storage/app/courses/' . $data->thumbnail));
-            }
             return response(
                 [
                     'message' => 'Course has been deleted successfully ',

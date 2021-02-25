@@ -39,11 +39,11 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     //TEACHER AUTHENTICATED ROUTES HERE...
     $router->group(['middleware' => 'teacher','prefix'=>'teacher'], function () use ($router) {
-        $router->group(['prefix'=>'course'], function() use ($router){
+        $router->group(['prefix'=>'courses'], function() use ($router){
             $router->get('/','CoursesController@getAll');
             $router->post('/add','CoursesController@add');
             $router->put('/update','CoursesController@update');
-            $router->delete('/delete','CoursesController@delete');
+            $router->delete('/delete/{id}','CoursesController@delete');
 
             $router->post('/enrol','CoursesController@enrol');
         });
@@ -52,7 +52,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
         {
             $router->get('/','Teacher\StudentController@index');
             $router->post('/add','Teacher\StudentController@add');
-            $router->post('/update','Teacher\StudentController@update');
+            $router->put('/update','Teacher\StudentController@update');
             $router->delete('/delete/{id}','Teacher\StudentController@delete');
         });
 
