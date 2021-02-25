@@ -9,7 +9,7 @@ class Student extends Model
 {
     protected $table='students';
     protected $fillable=[
-        'id','last_name','first_name'
+        'id','last_name','email','first_name','profile_pic','date_of_birth','gender','phone_number','is_enrolled','city','department',
     ];
 
     public function courses()

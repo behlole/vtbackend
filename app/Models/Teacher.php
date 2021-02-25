@@ -20,4 +20,9 @@ class Teacher extends Model
     {
         return $this->hasMany(Course::class);
     }
+    public static function getAllStudents($perPage)
+    {
+        $data=self::find(auth()->user()->id)->students()->paginate($perPage);
+        return $data;
+    }
 }

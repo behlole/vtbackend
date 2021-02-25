@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Quiz extends Model
 {
     protected $table = 'quizzes';
+    protected $guarded=[];
 
-
-  public static function questions()
+  public  function questions()
   {
       return $this->hasMany(QuizQuestion::class);
   }
