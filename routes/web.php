@@ -50,9 +50,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
         $router->group(['prefix'=>'students'],function () use ($router)
         {
-            $router->post('/add','Teacher\StudentController@add');
-            $router->post('/update','Teacher\StudentController@add');
             $router->get('/','Teacher\StudentController@index');
+            $router->post('/add','Teacher\StudentController@add');
+            $router->post('/update','Teacher\StudentController@update');
+            $router->delete('/delete/{id}','Teacher\StudentController@delete');
         });
 
     });
