@@ -34,9 +34,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 
 
-
-
-
     //TEACHER AUTHENTICATED ROUTES HERE...
     $router->group(['middleware' => 'teacher','prefix'=>'teacher'], function () use ($router) {
         $router->group(['prefix'=>'courses'], function() use ($router){
@@ -44,8 +41,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->post('/add','CoursesController@add');
             $router->put('/update','CoursesController@update');
             $router->delete('/delete/{id}','CoursesController@delete');
-
             $router->post('/enrol','CoursesController@enrol');
+            $router->get('/get-enrolled/{id}','CoursesController@getEnrolled');
+
         });
 
         $router->group(['prefix'=>'students'],function () use ($router)

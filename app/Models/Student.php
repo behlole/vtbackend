@@ -22,11 +22,11 @@ class Student extends Model
         return $this->belongsToMany(Teacher::class,'teachers_students','student_id','teacher_id');
     }
 
-    public static function enrol($id,$course_id)
-    {
-        if($student=self::find($id))
-        {
 
-        }
+    public function enrolCourse($course,$student_id)
+    {
+        self::find($student_id)->courses()->detach();
+        return self::find($student_id)->courses()->attach($course,['enrollment_date'=>Carbon::now()->format('Y-m-d')]);
+
     }
 }
