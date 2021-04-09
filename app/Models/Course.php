@@ -3,16 +3,20 @@
 namespace App\Models;
 
 use App\Helpers\Helper;
-use Carbon\Carbon;
-use Faker\Provider\File;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
+use Laravel\Lumen\Http\ResponseFactory;
 
 class Course extends Model
 {
     protected $table = 'courses';
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
 
+    /**
+     * @param $id
+     * @return array|Response|ResponseFactory
+     */
     public static function deleteCourse($id)
     {
         if ($course = self::find($id)) {
@@ -42,14 +46,61 @@ class Course extends Model
             'student_id');
     }
 
+    public function meetings()
+    {
+        return $this->belongsToMany(
+            Meeting::class,
+            'meeting_courses',
+            'course_id',
+            'meeting_id'
+        );
+    }
+
+    /**
+     * @param $course_name
+     * @return array
+     */
     public static function addCourse($course_name)
     {
         self::create(
             [
-                'course_name'=>$course_name,
-                'teacher_id'=>auth()->user()->id
+                'course_name' => $course_name,
+                'teacher_id' => auth()->user()->id
             ]
         );
         return Helper::successResponse("Course added Successfully");
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function findCourse($id)
+    {
+        return self::find($id)->first();
+    }
+
+    /**
+     * @param $id
+     * @param $code
+     * @return mixed
+     */
+    public static function updateCode($id, $code)
+    {
+        return self::findCourse($id)->update(
+            [
+                'current_meeting_code' => $code
+            ]
+        );
+    }
+
+    /**
+     * @param $id
+     * @param $meetingId
+     */
+    public static function addMeeting($id, $meetingId)
+    {
+        self::find($id)->meetings()->attach($meetingId);
+
     }
 }

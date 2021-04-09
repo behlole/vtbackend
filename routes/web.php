@@ -1,5 +1,5 @@
 <?php
-/** @var \Laravel\Lumen\Routing\Router $router */
+/** @var Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -11,6 +11,9 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
+
+use Laravel\Lumen\Routing\Router;
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
@@ -32,50 +35,40 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     });
 
 
-
-
     //TEACHER AUTHENTICATED ROUTES HERE...
-    $router->group(['middleware' => 'teacher','prefix'=>'teacher'], function () use ($router) {
-        $router->group(['prefix'=>'courses'], function() use ($router){
-            $router->get('/','CoursesController@getAll');
-            $router->post('/add','CoursesController@add');
-            $router->put('/update','CoursesController@update');
-            $router->delete('/delete/{id}','CoursesController@delete');
-            $router->post('/enrol','CoursesController@enrol');
-            $router->get('/get-enrolled/{id}','CoursesController@getEnrolled');
+    $router->group(['middleware' => 'teacher', 'prefix' => 'teacher'], function () use ($router) {
+        $router->group(['prefix' => 'courses'], function () use ($router) {
+            $router->get('/', 'CoursesController@getAll');
+            $router->post('/add', 'CoursesController@add');
+            $router->put('/update', 'CoursesController@update');
+            $router->delete('/delete/{id}', 'CoursesController@delete');
+            $router->post('/enrol', 'CoursesController@enrol');
+            $router->get('/get-enrolled/{id}', 'CoursesController@getEnrolled');
 
         });
 
-        $router->group(['prefix'=>'students'],function () use ($router)
-        {
-            $router->get('/','Teacher\StudentController@index');
-            $router->post('/add','Teacher\StudentController@add');
-            $router->put('/update','Teacher\StudentController@update');
-            $router->delete('/delete/{id}','Teacher\StudentController@delete');
+        $router->group(['prefix' => 'students'], function () use ($router) {
+            $router->get('/', 'Teacher\StudentController@index');
+            $router->post('/add', 'Teacher\StudentController@add');
+            $router->put('/update', 'Teacher\StudentController@update');
+            $router->delete('/delete/{id}', 'Teacher\StudentController@delete');
+        });
+        $router->group(['prefix' => 'meeting'], function () use ($router) {
+            $router->get('/start/{id}/{code}', 'Teacher\MeetingController@start');
+            $router->get('/end/{code}', 'Teacher\MeetingController@end');
+            $router->get('/get', 'Teacher\MeetingController@getMeetings');
         });
 
     });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //STUDENT AUTHENTICATED ROUTES HERE...
-    $router->group(['middleware' => 'student','prefix'=>'student'], function () use ($router) {
-        $router->Get('/checkStudent', function () {
-            return "Student Checked";
+    $router->group(['middleware' => 'student', 'prefix' => 'student'], function () use ($router) {
+        $router->group(['prefix' => 'courses'], function () use ($router) {
+            $router->get('/', 'Student\StudentController@getCourses');
+        });
+        $router->group(['prefix' => 'meeting'], function () use ($router) {
+            $router->get('/activity/{meeting_code}/{activity}', 'Student\StudentController@recordActiviy');
         });
     });
 });
