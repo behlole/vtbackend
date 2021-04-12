@@ -27,7 +27,7 @@ class MeetingController extends Controller
         $meeting = new Meeting();
         $meeting->meeting_code = $code;
         $meeting->teacher_id = auth()->user()->id;
-        $meeting->start_time = Carbon::now();
+        $meeting->start_time = date('H:i:s', time());
         $meeting->save();
         $meeting_id = Meeting::latest('id')->first()->id;
         Course::addMeeting($id, $meeting_id);
@@ -39,9 +39,14 @@ class MeetingController extends Controller
     public function end($code)
     {
         $meeting = Meeting::where('meeting_code', $code)->first();
-        $start = Carbon::parse($meeting->start_time);
-        $end = Carbon::now();
-        $duration = $end->diff($start);
+
+
+        $start = Carbon::parse($meeting->date_begin);
+        $end = Carbon::parse(Carbon::now());
+        $hours = $end->diffInHours($start);
+        $seconds = $end->diffInSeconds($start);
+        $duration = $hours . ':' . $seconds;
+
 
         Meeting::where('meeting_code', $code)->update([
             'end_time' => $end,
@@ -56,6 +61,12 @@ class MeetingController extends Controller
         $data = Teacher::getAllMeetings();
         foreach ($data as $meetings) {
             $meetings['course_name'] = Meeting::findCourseById($meetings->meeting_code)->course_name;
+            $start = Carbon::parse($meetings->start_date);
+            $end = Carbon::parse($meetings->end_date);
+            $hours = $end->diffInHours($start);
+            $seconds = $end->diffInSeconds($start);
+
+            $meetings['duration'] = $hours . ':' . $seconds;
         }
         return $data;
     }

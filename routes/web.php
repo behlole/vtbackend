@@ -37,6 +37,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     //TEACHER AUTHENTICATED ROUTES HERE...
     $router->group(['middleware' => 'teacher', 'prefix' => 'teacher'], function () use ($router) {
+        $router->group(['prefix' => 'profile'], function () use ($router) {
+            $router->get('/', 'Teacher\ProfileController@getProfile');
+        });
         $router->group(['prefix' => 'courses'], function () use ($router) {
             $router->get('/', 'CoursesController@getAll');
             $router->post('/add', 'CoursesController@add');
