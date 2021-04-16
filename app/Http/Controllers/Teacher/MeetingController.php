@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Meeting;
 use App\Models\Teacher;
-use Carbon\Carbon;
 
 class MeetingController extends Controller
 {
@@ -16,6 +15,7 @@ class MeetingController extends Controller
      */
     public function start($id, $code)
     {
+        date_default_timezone_set("Asia/Karachi");
         $course = Course::findCourse($id);
         $students = $course->students;
         Course::updateCode($id, $code);
@@ -27,7 +27,8 @@ class MeetingController extends Controller
         $meeting = new Meeting();
         $meeting->meeting_code = $code;
         $meeting->teacher_id = auth()->user()->id;
-        $meeting->start_time = date('H:i:s', time());
+        $meeting->start_time = date("Y-m-d h:i:s");
+//        $meeting->start_time =time('h:i:s');
         $meeting->save();
         $meeting_id = Meeting::latest('id')->first()->id;
         Course::addMeeting($id, $meeting_id);
@@ -40,17 +41,27 @@ class MeetingController extends Controller
     {
         $meeting = Meeting::where('meeting_code', $code)->first();
 
-
-        $start = Carbon::parse($meeting->date_begin);
-        $end = Carbon::parse(Carbon::now());
-        $hours = $end->diffInHours($start);
-        $seconds = $end->diffInSeconds($start);
-        $duration = $hours . ':' . $seconds;
-
+        date_default_timezone_set("Asia/Karachi");
+        $end = date("Y-m-d h:i:s");
+        $diff = abs(strtotime($end) - strtotime($meeting->start_time));
+        $years = floor($diff / (365 * 60 * 60 * 24));
+        $months = floor(($diff - $years * 365 * 60 * 60 * 24)
+            / (30 * 60 * 60 * 24));
+        $days = floor(($diff - $years * 365 * 60 * 60 * 24 -
+                $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+        $hours = floor(($diff - $years * 365 * 60 * 60 * 24
+                - $months * 30 * 60 * 60 * 24 - $days * 60 * 60 * 24)
+            / (60 * 60));
+        $minutes = floor(($diff - $years * 365 * 60 * 60 * 24
+                - $months * 30 * 60 * 60 * 24 - $days * 60 * 60 * 24
+                - $hours * 60 * 60) / 60);
+        $seconds = floor(($diff - $years * 365 * 60 * 60 * 24
+            - $months * 30 * 60 * 60 * 24 - $days * 60 * 60 * 24
+            - $hours * 60 * 60 - $minutes * 60));
 
         Meeting::where('meeting_code', $code)->update([
             'end_time' => $end,
-            'duration' => $duration
+            'duration' => $hours . ' hours,' . $minutes . ' minutes,' . $seconds . ' seconds'
         ]);
         Course::where('current_meeting_code', $code)->update(['current_meeting_code' => '']);
         return Helper::successResponse("Meeting ended");
@@ -61,12 +72,6 @@ class MeetingController extends Controller
         $data = Teacher::getAllMeetings();
         foreach ($data as $meetings) {
             $meetings['course_name'] = Meeting::findCourseById($meetings->meeting_code)->course_name;
-            $start = Carbon::parse($meetings->start_date);
-            $end = Carbon::parse($meetings->end_date);
-            $hours = $end->diffInHours($start);
-            $seconds = $end->diffInSeconds($start);
-
-            $meetings['duration'] = $hours . ':' . $seconds;
         }
         return $data;
     }
