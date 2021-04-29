@@ -17,9 +17,11 @@ class CreateMeetingsTable extends Migration
             $table->id();
             $table->string('meeting_code');
             $table->unsignedBigInteger('teacher_id');
+            $table->unsignedBigInteger('course_id');
             $table->dateTime('start_time');
             $table->dateTime('end_time')->nullable();
             $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
             $table->string('duration')->nullable();
             $table->string('recording')->nullable();
             $table->timestamps();

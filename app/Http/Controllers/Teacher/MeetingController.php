@@ -27,6 +27,7 @@ class MeetingController extends Controller
         $meeting = new Meeting();
         $meeting->meeting_code = $code;
         $meeting->teacher_id = auth()->user()->id;
+        $meeting->course_id = $id;
         $meeting->start_time = date("Y-m-d h:i:s");
 //        $meeting->start_time =time('h:i:s');
         $meeting->save();
@@ -69,10 +70,10 @@ class MeetingController extends Controller
 
     public function getMeetings()
     {
-        $data = Teacher::getAllMeetings();
-        foreach ($data as $meetings) {
+        $meeting = Teacher::getAllMeetings();
+        foreach ($meeting as $meetings) {
             $meetings['course_name'] = Meeting::findCourseById($meetings->meeting_code)->course_name;
         }
-        return $data;
+        return $meeting;
     }
 }

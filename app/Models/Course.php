@@ -4,12 +4,20 @@ namespace App\Models;
 
 use App\Helpers\Helper;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Http\ResponseFactory;
 
 class Course extends Model
 {
+    /**
+     * @var string
+     */
     protected $table = 'courses';
+    /**
+     * @var string[]
+     */
     protected $guarded = ['id'];
 
 
@@ -21,6 +29,8 @@ class Course extends Model
     {
         if ($course = self::find($id)) {
             $course->delete();
+            if ($course->meeting)
+                $course->meeting->detach();
             return response(
                 [
                     'message' => 'Course has been deleted successfully ',
@@ -32,11 +42,17 @@ class Course extends Model
 
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function teacher()
     {
         return $this->belongsTo(Teacher::class);
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function students()
     {
         return $this->belongsToMany(
@@ -46,6 +62,9 @@ class Course extends Model
             'student_id');
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function meetings()
     {
         return $this->belongsToMany(
