@@ -14,6 +14,11 @@ class Meeting extends Model
         return self::where('meeting_code', $code)->first()->id;
     }
 
+    public static function findMeetingByCode($code)
+    {
+        return self::where('meeting_code', $code)->first();
+    }
+
     public static function findCourseById($code)
     {
         return self::where('meeting_code', $code)->first()->courses->first();
@@ -24,7 +29,7 @@ class Meeting extends Model
         return $this->belongsToMany(
             Student::class,
             'meeting_students',
-            'meeting-id',
+            'meeting_id',
             'student_id');
     }
 

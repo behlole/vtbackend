@@ -12,6 +12,25 @@ class Student extends Model
         'id', 'last_name', 'email', 'first_name', 'profile_pic', 'date_of_birth', 'gender', 'phone_number', 'is_enrolled', 'city', 'department',
     ];
 
+    public static function findStudentsByMeetingCode($code)
+    {
+        return Meeting::findMeetingByCode($code)->students;
+    }
+
+    public static function getActivityRecordByMeeting($meeting_id, $student_id)
+    {
+        return Student::find($student_id)->activities->where('meeting_id', $meeting_id);
+    }
+
+    public function meetings()
+    {
+        return $this->belongsToMany(
+            Meeting::class,
+            'meeting_students',
+            'student_id',
+            'meeting_id');
+    }
+
     public function courses()
     {
         return $this->belongsToMany(Course::class, 'enrolled_courses', 'student_id', 'course_id');

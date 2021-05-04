@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Meeting;
+use App\Models\Student;
 use App\Models\Teacher;
 
 class MeetingController extends Controller
@@ -75,5 +76,17 @@ class MeetingController extends Controller
             $meetings['course_name'] = Meeting::findCourseById($meetings->meeting_code)->course_name;
         }
         return $meeting;
+    }
+
+    public function getDetails($code)
+    {
+        $data['meeting'] = Meeting::findMeetingByCode($code);
+        $data['student'] = Student::findStudentsByMeetingCode($code);
+        return $data;
+    }
+
+    public function getStudentActivity($meeting_id, $student_id)
+    {
+        return Student::getActivityRecordByMeeting($meeting_id, $student_id);
     }
 }

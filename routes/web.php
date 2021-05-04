@@ -57,6 +57,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->delete('/delete/{id}', 'Teacher\StudentController@delete');
         });
         $router->group(['prefix' => 'meeting'], function () use ($router) {
+            $router->get('/details/{code}', 'Teacher\MeetingController@getDetails');
+            $router->get('/details/{meeting_id}/{student_id}', 'Teacher\MeetingController@getStudentActivity');
+
             $router->get('/start/{id}/{code}', 'Teacher\MeetingController@start');
             $router->get('/end/{code}', 'Teacher\MeetingController@end');
             $router->get('/get', 'Teacher\MeetingController@getMeetings');
