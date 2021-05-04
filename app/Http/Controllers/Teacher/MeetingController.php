@@ -33,6 +33,7 @@ class MeetingController extends Controller
 //        $meeting->start_time =time('h:i:s');
         $meeting->save();
         $meeting_id = Meeting::latest('id')->first()->id;
+        Course::find($id)->update(['current_meeting_code' => $code]);
         Course::addMeeting($id, $meeting_id);
         Teacher::addMeeting(auth()->user()->role_id, $meeting_id);
         return Helper::successResponse("Meeting Started Successfully");

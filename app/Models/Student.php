@@ -65,6 +65,8 @@ class Student extends Model
 
     public static function recordActivity($meeting_code, $activity_record)
     {
+
+        //TODO student record with respect to meeting check activity and then store that with relationed table of meeting_students :)
         $student = self::find(auth()->user()->role_id);
         $meetingId = Meeting::findByCode($meeting_code);
         $activity = new StudentActivity();

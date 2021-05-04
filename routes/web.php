@@ -76,5 +76,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->group(['prefix' => 'meeting'], function () use ($router) {
             $router->get('/activity/{meeting_code}/{activity}', 'Student\StudentController@recordActiviy');
         });
+        $router->group(['prefix' => 'teachers'], function () use ($router) {
+            $router->get('/', 'Student\StudentController@getTeacher');
+        });
     });
 });
