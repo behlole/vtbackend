@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helper;
 use App\Models\Course;
+use App\Models\Student;
 use App\Models\Teacher;
+use Exception;
 use Illuminate\Http\Request;
 
 class CoursesController extends Controller
@@ -27,7 +29,7 @@ class CoursesController extends Controller
                 'course_name' => $request->input('course_name')
             ]);
             return Helper::successResponse("Course updated successfully");
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Helper::errorResponse($e->getMessage());
         }
 
@@ -41,7 +43,7 @@ class CoursesController extends Controller
             ]);
             return Course::addCourse($request->input('course_name'));
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Helper::errorResponse($e->getMessage());
         }
     }
@@ -60,7 +62,7 @@ class CoursesController extends Controller
                 'course_id' => 'required',
             ]);
 
-        return (new \App\Models\Student)->enrolCourse($request->input('course_id'),$request->input('student_id'));
+        return (new Student)->enrolCourse($request->input('course_id'), $request->input('student_id'));
 
 
     }

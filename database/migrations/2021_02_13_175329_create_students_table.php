@@ -23,7 +23,6 @@ class CreateStudentsTable extends Migration
             $table->unsignedBigInteger('phone_number')->nullable();
             $table->string('gender');
             $table->string('department')->nullable();
-            $table->boolean('is_enrolled')->nullable();
             $table->string('city');
             $table->timestamps();
         });

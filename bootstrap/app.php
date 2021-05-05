@@ -61,7 +61,7 @@ $app->singleton(
 
 $app->configure('app');
 $app->configure('jwt');
-
+$app->configure('mail');
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -72,16 +72,21 @@ $app->configure('jwt');
 | route or middleware that'll be assigned to some specific routes.
 |
 */
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
 
- $app->middleware([
-     App\Http\Middleware\CorsMiddleware::class,
- ]);
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class,
+]);
 
- $app->routeMiddleware([
-     'auth' => App\Http\Middleware\Authenticate::class,
-     'student'=>App\Http\Middleware\StudentMiddleware::class,
-     'teacher'=>App\Http\Middleware\TeacherMiddleware::class,
- ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+    'student' => App\Http\Middleware\StudentMiddleware::class,
+    'teacher' => App\Http\Middleware\TeacherMiddleware::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -110,11 +115,13 @@ $app->configure('jwt');
 |
 */
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__ . '/../routes/web.php';
 });
 
 return $app;
