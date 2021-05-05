@@ -19,7 +19,12 @@ class Student extends Model
 
     public static function getActivityRecordByMeeting($meeting_id, $student_id)
     {
-        return Student::find($student_id)->activities->where('meeting_id', $meeting_id);
+        return Student::find($student_id)->activities->where('meeting_id', $meeting_id)->get()->toArray();
+    }
+
+    public static function joinMeeting($meetingId, $role_id)
+    {
+        return self::find($role_id)->meetings()->attach($meetingId);
     }
 
     public function meetings()
@@ -65,10 +70,11 @@ class Student extends Model
 
     public static function recordActivity($meeting_code, $activity_record)
     {
-
-        //TODO student record with respect to meeting check activity and then store that with relationed table of meeting_students :)
         $student = self::find(auth()->user()->role_id);
         $meetingId = Meeting::findByCode($meeting_code);
+        if ($activity_record == 'Joined-Meeting') {
+            Student::joinMeeting($meetingId, auth()->user()->role_id);
+        }
         $activity = new StudentActivity();
         $activity->student_id = auth()->user()->role_id;
         $activity->meeting_id = $meetingId;

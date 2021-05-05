@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\TextUI\Help;
@@ -44,7 +45,7 @@ class StudentController extends Controller
                 'message' => 'Student saved successfully',
                 'student' => $student
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Helper::errorResponse('Something bad happened');
         }
     }
@@ -55,17 +56,16 @@ class StudentController extends Controller
             $student = Student::find($request->input('id'));
             $student->update($request->all());
 
-            $user = User::where('role_type','=', 2)->where('role_id','=', $request->input('id'));
+            $user = User::where('role_type', '=', 2)->where('role_id', '=', $request->input('id'));
             $user->update(
                 [
-                    'email'=>$request->input('email'),
-                    'first_name'=>$request->input('first_name'),
-                    'last_name'=>$request->input('last_name')
+                    'email' => $request->input('email'),
+                    'first_name' => $request->input('first_name'),
+                    'last_name' => $request->input('last_name')
                 ]
             );
             return Helper::successResponse("Student Updated Successfully");
-        }catch (\Exception $e)
-        {
+        } catch (Exception $e) {
             return Helper::errorResponse("Something bad happened \n Could not update, please try again");
         }
 
@@ -75,5 +75,10 @@ class StudentController extends Controller
     {
         Student::find($id)->delete();
         return Helper::successResponse("Student Deleted Successfully");
+    }
+
+    public static function getStudent($id)
+    {
+        return Student::find($id)->first();
     }
 }

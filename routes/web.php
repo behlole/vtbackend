@@ -55,6 +55,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->post('/add', 'Teacher\StudentController@add');
             $router->put('/update', 'Teacher\StudentController@update');
             $router->delete('/delete/{id}', 'Teacher\StudentController@delete');
+            $router->get('/get/{id}', 'Teacher\StudentController@getStudent');
         });
         $router->group(['prefix' => 'meeting'], function () use ($router) {
             $router->get('/details/{code}', 'Teacher\MeetingController@getDetails');
