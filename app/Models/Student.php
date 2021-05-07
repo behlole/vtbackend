@@ -19,7 +19,7 @@ class Student extends Model
 
     public static function getActivityRecordByMeeting($meeting_id, $student_id)
     {
-        return Student::find($student_id)->activities->where('meeting_id', $meeting_id)->get()->toArray();
+        return Student::find($student_id)->activities->where('meeting_id', $meeting_id)->toArray();
     }
 
     public static function joinMeeting($meetingId, $role_id)
