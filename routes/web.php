@@ -17,6 +17,8 @@ use Laravel\Lumen\Routing\Router;
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->get('/student-control', 'Teacher\MeetingController@studentControl');
+
 //GUEST ROUTES HERE...
 
 
@@ -44,6 +46,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('/', 'CoursesController@getAll');
             $router->post('/add', 'CoursesController@add');
             $router->put('/update', 'CoursesController@update');
+            $router->put('/update', 'CoursesController@update');
             $router->delete('/delete/{id}', 'CoursesController@delete');
             $router->post('/enrol', 'CoursesController@enrol');
             $router->get('/get-enrolled/{id}', 'CoursesController@getEnrolled');
@@ -64,7 +67,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('/start/{id}/{code}', 'Teacher\MeetingController@start');
             $router->get('/end/{code}', 'Teacher\MeetingController@end');
             $router->get('/get', 'Teacher\MeetingController@getMeetings');
+
         });
+
 
     });
 
@@ -81,4 +86,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('/', 'Student\StudentController@getTeacher');
         });
     });
+
+
 });

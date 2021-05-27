@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Events\StudentControl;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
@@ -89,5 +90,17 @@ class MeetingController extends Controller
     public function getStudentActivity($meeting_id, $student_id)
     {
         return Student::getActivityRecordByMeeting($meeting_id, $student_id);
+    }
+
+    public function studentControl()
+    {
+//        $student_control_data['student_email']=$request->input('email');
+//        $student_control_data['meeting_code']=$request->input('code');
+//        $student_control_data['activity']=$request->input('activity');
+        $student_control_data = "hello";
+        event(new StudentControl($student_control_data));
+        return "hello new";
+
+
     }
 }

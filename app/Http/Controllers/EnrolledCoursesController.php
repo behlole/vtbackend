@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Helper;
 use App\Models\Course;
 use App\Models\EnrolledCourse;
-use App\Models\Student;
 use App\Models\User;
-use Carbon\Traits\Date;
 use Illuminate\Http\Request;
 
 class EnrolledCoursesController extends Controller
