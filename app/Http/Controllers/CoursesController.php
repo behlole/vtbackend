@@ -13,7 +13,7 @@ class CoursesController extends Controller
 {
     public function getAll()
     {
-        return Teacher::find(auth()->user()->id)->courses;
+        return Teacher::find(auth()->user()->role_id)->courses;
     }
 
     public function update(Request $request)

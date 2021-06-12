@@ -18,6 +18,7 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 $router->get('/student-control', 'Teacher\MeetingController@studentControl');
+$router->get('/send-mail','Auth\AuthController@sendMail');
 
 //GUEST ROUTES HERE...
 
@@ -27,21 +28,20 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->post('/register', 'Auth\AuthController@register');
     $router->post('/login', 'Auth\AuthController@login');
 });
-
-
 //AUTHENTICATED ROUTES HERE ...
 $router->group(['middleware' => 'auth'], function () use ($router) {
     //AUTHENTICATED ROUTES HERE
-    $router->get('/checkAuth', function () {
-        return "Auth Checked";
-    });
 
+    $router->get('/user/get-user','Auth\AuthController@getUser');
+    $router->post('/user/submit-edit/{role_type}','Auth\AuthController@saveUser');
+    $router->post('/user/change-password','Auth\AuthController@changePassword');
+    $router->group(['prefix' => 'profile'], function () use ($router) {
+        $router->get('/', 'Teacher\ProfileController@getProfile');
+    });
 
     //TEACHER AUTHENTICATED ROUTES HERE...
     $router->group(['middleware' => 'teacher', 'prefix' => 'teacher'], function () use ($router) {
-        $router->group(['prefix' => 'profile'], function () use ($router) {
-            $router->get('/', 'Teacher\ProfileController@getProfile');
-        });
+
         $router->group(['prefix' => 'courses'], function () use ($router) {
             $router->get('/', 'CoursesController@getAll');
             $router->post('/add', 'CoursesController@add');
@@ -86,6 +86,5 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('/', 'Student\StudentController@getTeacher');
         });
     });
-
 
 });

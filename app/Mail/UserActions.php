@@ -3,10 +3,11 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NotifyStudent extends Mailable
+class UserActions extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -27,6 +28,6 @@ class NotifyStudent extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->view('name');
     }
 }

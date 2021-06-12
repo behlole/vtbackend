@@ -39,6 +39,6 @@ class Teacher extends Model
 
     public static function getAllMeetings()
     {
-        return self::find(auth()->user()->id)->meetings;
+        return self::find(auth()->user()->role_id)->meetings;
     }
 }

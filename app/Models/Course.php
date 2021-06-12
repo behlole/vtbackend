@@ -84,7 +84,7 @@ class Course extends Model
         self::create(
             [
                 'course_name' => $course_name,
-                'teacher_id' => auth()->user()->id
+                'teacher_id' => auth()->user()->role_id
             ]
         );
         return Helper::successResponse("Course added Successfully");

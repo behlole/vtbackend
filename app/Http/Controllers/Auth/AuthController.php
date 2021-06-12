@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Mail\UserActions;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Swift_TransportException;
 
 
 class AuthController extends Controller
@@ -100,5 +104,99 @@ class AuthController extends Controller
             'user' => auth()->user(),
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+
+    function getUser()
+    {
+        if (\auth()->guard('api')->user()->role_type == 1) {
+            return Teacher::where('id', \auth()->guard('api')->user()->role_id)->first();
+        } else {
+            return Student::where('id', \auth()->guard('api')->user()->role_id)->first();
+
+        }
+    }
+
+    function saveUser(Request $request, $role_type)
+    {
+        try {
+
+            if ($role_type == 1) {
+                Teacher::where('id', $request->id)->update(
+                    [
+                        'first_name' => $request->first_name,
+                        'last_name' => $request->last_name,
+                        'email' => $request->email,
+                        'department' => $request->department,
+                        'gender' => $request->gender,
+                        'phone_number' => $request->phone_number,
+                        'date_of_birth' => Carbon::parse($request->date_of_birth)
+                    ]
+                );
+
+                User::where('role_type', $role_type)->where('id', $request->id)->update([
+                    'email' => $request->email,
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                ]);
+
+                return response()->json([
+                    'message' => 'Data updated successfully',
+                ], 200);
+            } else {
+                Student::where('id', $request->id)->update(
+                    [
+                        'first_name' => $request->first_name,
+                        'last_name' => $request->last_name,
+                        'email' => $request->email,
+                        'department' => $request->department,
+                        'gender' => $request->gender,
+                        'phone_number' => $request->phone_number,
+                        'date_of_birth' => Carbon::parse($request->date_of_birth)
+                    ]
+                );
+
+                User::where('role_type', $role_type)->where('id', $request->id)->update([
+                    'email' => $request->email,
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                ]);
+
+                return response()->json([
+                    'message' => 'Data updated successfully',
+                ], 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 405);
+        }
+    }
+
+    public function changePassword(Request $request)
+    {
+        try {
+
+            $user = User::find(\auth()->guard('api')->user()->id);
+            $user->password = app('hash')->make($request->input('new_password'));
+            $user->save();
+
+            return response()->json([
+                'message' => 'Password Updated Successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Something bad Happened, Please try Again'
+            ]);
+        }
+    }
+
+    public function sendMail()
+    {
+        $sender_email = "behloleaqil@gmail.com";
+        $receiver_email = "behloleaqil@gmail.com";
+
+        Mail::raw(UserActions::class, function($message) use ($sender_email, $receiver_email) {
+            $message->from($sender_email, config('app.mail'));
+            $message->to($receiver_email)->subject("Email subject");
+        });
+        return "mail send";
     }
 }

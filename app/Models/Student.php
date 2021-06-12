@@ -75,11 +75,65 @@ class Student extends Model
         if ($activity_record == 'Joined-Meeting') {
             Student::joinMeeting($meetingId, auth()->user()->role_id);
         }
+        /*
+         * Type of activities
+         *  1. Video-Turned-Off
+         *  2. Audio-Turned-On
+         *  3. Audio-Turned-Off
+         *  4. Joined-Meeting
+         *  5. Left-Meeting
+         *  7. Video-Turned-On
+         *  8. Screen-Sharing-Turned-On
+         *  9. Screen-Sharing-Turned-Off
+         */
         $activity = new StudentActivity();
         $activity->student_id = auth()->user()->role_id;
         $activity->meeting_id = $meetingId;
         $activity->activity_type = $activity_record;
+        if ($activity_record == 'Audio-Turned-On') {
+            StudentCheck::where('student_id', auth()->user()->role_id)->update(
+                [
+                    'audio' => true
+                ]
+            );
+        } else if ($activity_record == 'Audio-Turned-Off') {
+            StudentCheck::where('student_id', auth()->user()->role_id)->update(
+                [
+                    'audio' => false
+                ]
+            );
 
+        } else if ($activity_record == 'Video-Turned-Off') {
+            StudentCheck::where('student_id', auth()->user()->role_id)->update(
+                [
+                    'video' => false
+                ]
+            );
+        } else if ($activity_record == 'Video-Turned-On') {
+            StudentCheck::where('student_id', auth()->user()->role_id)->update(
+                [
+                    'video' => true
+                ]
+            );
+        } else if ($activity_record == 'Screen-Sharing-Turned-Off') {
+            StudentCheck::where('student_id', auth()->user()->role_id)->update(
+                [
+                    'screen' => false
+                ]
+            );
+        } else if ($activity_record == 'Screen-Sharing-Turned-On') {
+            StudentCheck::where('student_id', auth()->user()->role_id)->update(
+                [
+                    'screen' => true
+                ]
+            );
+        } else if ($activity_record == 'Left-Meeting') {
+            StudentCheck::where('student_id', auth()->user()->role_id)->delete();
+        } else if ($activity_record == 'Joined-Meeting') {
+            $student1 = new StudentCheck();
+            $student1->student_id = auth()->user()->role_id;
+            $student1->save();
+        }
         return $student->activities()->save($activity);
     }
 }

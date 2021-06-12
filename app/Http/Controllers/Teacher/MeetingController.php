@@ -9,6 +9,7 @@ use App\Models\Course;
 use App\Models\Meeting;
 use App\Models\Student;
 use App\Models\Teacher;
+use Illuminate\Support\Facades\Mail;
 
 class MeetingController extends Controller
 {
@@ -21,17 +22,20 @@ class MeetingController extends Controller
         $course = Course::findCourse($id);
         $students = $course->students;
         Course::updateCode($id, $code);
-        //TODO Mail Driver
-//        foreach ($students as $student)
-//        {
-//            Mail::to($student->email);
-//        }
+
+        $sender_email = "vt@behloleaqil.com";
+        foreach ($students as $student) {
+            $receiver_email = $student->email;
+            Mail::raw("Class Has been started,\n Please join the class ", function ($message) use ($sender_email, $receiver_email) {
+                $message->from($sender_email, config('app.mail'));
+                $message->to($receiver_email)->subject("Email subject");
+            });
+        }
         $meeting = new Meeting();
         $meeting->meeting_code = $code;
-        $meeting->teacher_id = auth()->user()->id;
+        $meeting->teacher_id = auth()->user()->role_id;
         $meeting->course_id = $id;
         $meeting->start_time = date("Y-m-d h:i:s");
-//        $meeting->start_time =time('h:i:s');
         $meeting->save();
         $meeting_id = Meeting::latest('id')->first()->id;
         Course::find($id)->update(['current_meeting_code' => $code]);

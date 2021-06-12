@@ -15,7 +15,7 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        return Teacher::find(auth()->user()->id)->students;
+        return Teacher::find(auth()->user()->role_id)->students;
     }
 
     public function add(Request $request)
@@ -26,11 +26,11 @@ class StudentController extends Controller
             'email' => 'required|email|unique:users,email',
             'gender' => 'required',
         ]);
-        try {
+//        try {
             $student = new Student();
             $student->fill($request->all())->save();
             $role_id = Student::latest('id')->first()->id;
-            Teacher::find(auth()->user()->id)->students()->attach($role_id);
+            Teacher::find(auth()->user()->role_id)->students()->attach($role_id);
             $user = new User();
             $user->first_name = $request->input('first_name');
             $user->last_name = $request->input('last_name');
@@ -44,9 +44,9 @@ class StudentController extends Controller
                 'message' => 'Student saved successfully',
                 'student' => $student
             ]);
-        } catch (Exception $e) {
-            return Helper::errorResponse('Something bad happened');
-        }
+//        } catch (Exception $e) {
+//            return Helper::errorResponse('Something bad happened');
+//        }
     }
 
     public function update(Request $request)
@@ -78,6 +78,6 @@ class StudentController extends Controller
 
     public static function getStudent($id)
     {
-        return Student::find($id)->first();
+        return User::join('students','users.role_id','=','students.id')->where('users.role_id',$id)->first();
     }
 }
