@@ -6,7 +6,9 @@ use App\Helpers\Helper;
 use App\Models\Course;
 use App\Models\Student;
 use App\Models\Teacher;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class CoursesController extends Controller
@@ -56,13 +58,19 @@ class CoursesController extends Controller
 
     public function enrol(Request $request)
     {
+
         $this->validate($request,
             [
                 'student_id' => 'required',
-                'course_id' => 'required',
             ]);
 
-        return (new Student)->enrolCourse($request->input('course_id'), $request->input('student_id'));
+        try {
+            return (new Student)->enrolCourse($request->input('course_id'), $request->input('student_id'));
+        }catch (\Exception $e)
+        {
+            return Student::find($request->input('student_id'))->courses()->get();
+
+        }
 
 
     }

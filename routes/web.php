@@ -47,7 +47,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->post('/add', 'CoursesController@add');
             $router->put('/update', 'CoursesController@update');
             $router->put('/update', 'CoursesController@update');
-            $router->delete('/delete/{id}', 'CoursesController@delete');
+            $router->get('/delete/{id}', 'CoursesController@delete');
             $router->post('/enrol', 'CoursesController@enrol');
             $router->get('/get-enrolled/{id}', 'CoursesController@getEnrolled');
 
@@ -56,8 +56,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->group(['prefix' => 'students'], function () use ($router) {
             $router->get('/', 'Teacher\StudentController@index');
             $router->post('/add', 'Teacher\StudentController@add');
+            $router->get('/add-from-all/{id}', 'Teacher\StudentController@addFromAll');
+            $router->get('/get-all', 'Teacher\StudentController@getAll');
             $router->put('/update', 'Teacher\StudentController@update');
-            $router->delete('/delete/{id}', 'Teacher\StudentController@delete');
+            $router->get('/delete/{id}', 'Teacher\StudentController@delete');
             $router->get('/get/{id}', 'Teacher\StudentController@getStudent');
         });
         $router->group(['prefix' => 'meeting'], function () use ($router) {

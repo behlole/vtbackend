@@ -26,7 +26,7 @@ class StudentController extends Controller
             'email' => 'required|email|unique:users,email',
             'gender' => 'required',
         ]);
-//        try {
+        try {
             $student = new Student();
             $student->fill($request->all())->save();
             $role_id = Student::latest('id')->first()->id;
@@ -44,9 +44,9 @@ class StudentController extends Controller
                 'message' => 'Student saved successfully',
                 'student' => $student
             ]);
-//        } catch (Exception $e) {
-//            return Helper::errorResponse('Something bad happened');
-//        }
+        } catch (Exception $e) {
+            return Helper::errorResponse('Please try to change email ,Something bad happened');
+        }
     }
 
     public function update(Request $request)
@@ -65,19 +65,36 @@ class StudentController extends Controller
             );
             return Helper::successResponse("Student Updated Successfully");
         } catch (Exception $e) {
-            return Helper::errorResponse("Something bad happened \n Could not update, please try again");
+            return Helper::errorResponse("Please change email,Something bad happened \n Could not update, please try again");
         }
 
     }
 
     public function delete($id)
     {
-        Student::find($id)->delete();
+//        Student::find($id)->delete();
+        Teacher::find(auth()->user()->role_id)->students()->detach($id);
         return Helper::successResponse("Student Deleted Successfully");
     }
-
+    public function getAll()
+    {
+        return Student::all();
+    }
     public static function getStudent($id)
     {
         return User::join('students','users.role_id','=','students.id')->where('users.role_id',$id)->first();
+    }
+
+    public static function addFromAll($id)
+    {
+        if(!Teacher::find(auth()->user()->role_id)->students()->where('student_id', $id)->exists()) {
+            Teacher::find(auth()->user()->role_id)->students()->attach($id);
+            return Helper::successResponse("Student successfully added");
+        }
+        else
+        {
+            return Helper::errorResponse("Student already enrolled");
+
+        }
     }
 }

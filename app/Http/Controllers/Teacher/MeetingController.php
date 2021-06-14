@@ -23,14 +23,14 @@ class MeetingController extends Controller
         $students = $course->students;
         Course::updateCode($id, $code);
 
-        $sender_email = "vt@behloleaqil.com";
-        foreach ($students as $student) {
-            $receiver_email = $student->email;
-            Mail::raw("Class Has been started,\n Please join the class ", function ($message) use ($sender_email, $receiver_email) {
-                $message->from($sender_email, config('app.mail'));
-                $message->to($receiver_email)->subject("Email subject");
-            });
-        }
+//        $sender_email = "vt@behloleaqil.com";
+//        foreach ($students as $student) {
+//            $receiver_email = $student->email;
+//            Mail::raw("Class Has been started,\n Please join the class ", function ($message) use ($sender_email, $receiver_email) {
+//                $message->from($sender_email, config('app.mail'));
+//                $message->to($receiver_email)->subject("Email subject");
+//            });
+//        }
         $meeting = new Meeting();
         $meeting->meeting_code = $code;
         $meeting->teacher_id = auth()->user()->role_id;
